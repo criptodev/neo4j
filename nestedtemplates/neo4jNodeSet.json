@@ -219,7 +219,7 @@
         "dbms_connector_bolt_tls_level": "OPTIONAL"
       },
       "plan": {
-        "name": "neo4j_3_5_3_apoc",
+        "name": "neo4j_3_5_5_apoc",
         "publisher": "neo4j",
         "product": "neo4j-enterprise-3_5"
       },
