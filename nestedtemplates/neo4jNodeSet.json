@@ -234,7 +234,7 @@
           "imageReference": {
             "publisher": "neo4j",
             "offer": "neo4j-enterprise-3_5",
-            "sku": "neo4j_3_5_3_apoc",
+            "sku": "neo4j_3_5_5_apoc",
             "version": "latest"
           },
           "osDisk": {
