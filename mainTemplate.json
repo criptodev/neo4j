@@ -28,6 +28,18 @@
         "description": "Neo4j cluster name, which is included in DNS and resource naming"
       }
     },
+    "VNetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network to put the Neo4j cluster"
+      }
+    },
+    "SubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet to put the Neo4j cluster"
+      }
+    },
     "CoreNodes": {
       "type": "int",
       "minValue": 3,
@@ -152,7 +164,7 @@
       "nic": "[concat(parameters('ClusterName'),'-nic')]",
       "nsg": "[concat(parameters('ClusterName'),'-sg')]"
     },
-    "VNetName": "[concat(parameters('ClusterName'),'-vnet')]",
+    "VNetName": "[parameters('VNetName')]",
     "resourceIDs": {
       "virtualNetwork": "[resourceId('Microsoft.Network/virtualNetworks', variables('VNetName'))]"
     }
@@ -288,29 +300,6 @@
       "dependsOn": []
     },
     {
-      "type": "Microsoft.Resources/deployments",
-      "name": "VirtualNetwork",
-      "apiVersion": "2017-05-10",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vnet-new.json', parameters('_artifactsLocationSasToken')))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "NetworkName": {
-            "value": "[variables('VNetName')]"
-          },
-          "Location": {
-            "value": "[parameters('Location')]"
-          },
-          "Neo4JTags": {
-            "value": "[parameters('Neo4JTags')]"
-          }
-        }
-      }
-    },
-    {
       "condition": "[greater(parameters('CoreNodes'), 0)]",
       "type": "Microsoft.Resources/deployments",
       "name": "Neo4jCoreNodeSet",
@@ -329,7 +318,7 @@
             "value": "CORE"
           },
           "SubnetID": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VNetName'), 'NeoVnetSubnet1')]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VNetName'), parameters('SubnetName'))]"
           },
           "NetworkSecurityGroupId": {
             "value": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('namePrefixes').nsg)]"
@@ -416,7 +405,7 @@
             "value": "READ_REPLICA"
           },
           "SubnetID": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VNetName'), 'NeoVnetSubnet1')]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VNetName'), parameters('SubnetName'))]"
           },
           "NetworkSecurityGroupId": {
             "value": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('namePrefixes').nsg)]"
